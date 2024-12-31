@@ -60,5 +60,24 @@ namespace ProyectoPeopleSL
 
             return new List<PersonSL>();
         }
+
+        public void DeletePerson(int id)
+        {
+            try
+            {
+                Init();
+                var personToDelete = conn.Find<PersonSL>(id);
+                if (personToDelete != null)
+                {
+                    conn.Delete(personToDelete);
+                    StatusMessage = $"Registro con Id {id} eliminado.";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error al eliminar el registro: {ex.Message}";
+            }
+        }
+
     }
 }
