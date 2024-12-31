@@ -1,17 +1,23 @@
-﻿
+﻿using ProyectoPeopleSL.Models;
+using SQLite;
+
 namespace ProyectoPeopleSL
 {
     public class PersonRepository
     {
+        private SQLiteConnection conn;
+
         string _dbPath;
 
         public string StatusMessage { get; set; }
 
-        // TODO: Add variable for the SQLite connection
-
         private void Init()
         {
-            // TODO: Add code to initialize the repository         
+            if (conn != null)
+                return;
+
+            conn = new SQLiteConnection(_dbPath);
+            conn.CreateTable<PersonSL>();
         }
 
         public PersonRepository(string dbPath)
@@ -24,14 +30,12 @@ namespace ProyectoPeopleSL
             int result = 0;
             try
             {
-                // TODO: Call Init()
+                Init();
 
-                // basic validation to ensure a name was entered
                 if (string.IsNullOrEmpty(name))
                     throw new Exception("Valid name required");
 
-                // TODO: Insert the new person into the database
-                result = 0;
+                result = conn.Insert(new PersonSL { Name = name });
 
                 StatusMessage = string.Format("{0} record(s) added (Name: {1})", result, name);
             }
@@ -42,19 +46,19 @@ namespace ProyectoPeopleSL
 
         }
 
-        public List<Person> GetAllPeople()
+        public List<PersonSL> GetAllPeople()
         {
-            // TODO: Init then retrieve a list of Person objects from the database into a list
             try
             {
-
+                Init();
+                return conn.Table<PersonSL>().ToList();
             }
             catch (Exception ex)
             {
                 StatusMessage = string.Format("Failed to retrieve data. {0}", ex.Message);
             }
 
-            return new List<Person>();
+            return new List<PersonSL>();
         }
     }
 }

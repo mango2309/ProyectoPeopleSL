@@ -1,25 +1,31 @@
-﻿namespace ProyectoPeopleSL
+﻿using ProyectoPeopleSL.Models;
+
+namespace ProyectoPeopleSL
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
 
         public MainPage()
         {
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        public void OnNewButtonClicked(object sender, EventArgs args)
         {
-            count++;
+            statusMessage.Text = "";
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            App.PersonRepo.AddNewPerson(newPerson.Text);
+            statusMessage.Text = App.PersonRepo.StatusMessage;
         }
+
+        public void OnGetButtonClicked(object sender, EventArgs args)
+        {
+            statusMessage.Text = "";
+
+            List<PersonSL> people = App.PersonRepo.GetAllPeople();
+            peopleList.ItemsSource = people;
+        }
+
     }
 
 }
